@@ -109,6 +109,6 @@ Contributions are welcome! Please:
 MIT - See [LICENSE](LICENSE) for details.
 
 ## 📧 Contact
-- Email: [khacthien.dev@gmail.com](emailto:khacthien.dev@gmail.com)
+- Email: [khacthien.dev@gmail.com](khacthien.dev@gmail.com)
 - GitHub: [@khacthiennguyen](https://github.com/khacthiennguyen)
 
