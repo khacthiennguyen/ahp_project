@@ -1,7 +1,7 @@
 
 # AHP Decision Support System
 
-![AHP Demo](https://via.placeholder.com/800x400?text=AHP+Decision+Support+System+Demo)
+![AHP Demo](https://b1879915.smushcdn.com/1879915/wp-content/uploads/2023/10/SSDSI-Infographics-11.jpeg?lossy=2&strip=1&webp=1)
 
 A web-based decision support system implementing the Analytic Hierarchy Process (AHP) method, built with Python and Streamlit.
 
