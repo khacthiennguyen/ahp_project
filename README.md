@@ -1,114 +1,137 @@
 
 # AHP Decision Support System
 
-![AHP Demo](https://b1879915.smushcdn.com/1879915/wp-content/uploads/2023/10/SSDSI-Infographics-11.jpeg?lossy=2&strip=1&webp=1)
+![AHP System Demo](https://b1879915.smushcdn.com/1879915/wp-content/uploads/2023/10/SSDSI-Infographics-11.jpeg?lossy=2&strip=1&webp=1)
 
-A web-based decision support system implementing the Analytic Hierarchy Process (AHP) method, built with Python and Streamlit.
+A web-based decision support tool implementing the Analytic Hierarchy Process (AHP) method, built with Python and Streamlit.
 
-## 🌟 Features
+## ✨ Key Features
+- **Bilingual Interface**: English & Vietnamese support
+- **Criteria Management**: Dynamic CRUD operations for decision criteria
+- **Alternative Evaluation**: Comparative assessment framework
+- **Flexible Input Methods**:
+  - Dropdown selection (Saaty scale 1-9)
+  - Manual matrix input
+- **Automated AHP Calculations**:
+  - Weight computation
+  - Consistency Ratio (CR) validation
+  - Final scoring and ranking
+- **Interactive Visualization**: Dynamic charts and comparison matrices
+- **Analysis Persistence**: Local storage of decision models
 
-- **Multi-language support**: English & Vietnamese interfaces
-- **Criteria & alternatives management**: Add, edit, and delete criteria/alternatives
-- **Pairwise comparison**: Two input methods (dropdown & manual entry)
-- **AHP calculations**: Compute weights, consistency ratio, and final scores
-- **Visualization**: Interactive tables and charts
-- **Analysis storage**: Save and retrieve previous analyses
-- **Responsive UI**: Modern interface with tabs and intuitive controls
-
-## 🚀 Quick Start
+## 🚀 Quick Installation
 
 ### Prerequisites
 - Python 3.7+
-- pip
+- pip package manager
 
-### Installation
-1. Clone the repository:
+### Setup
 ```bash
-git clone https://github.com/your-username/ahp-decision-support-system.git
+# Clone repository
+git clone https://github.com/khacthiennguyen/ahp-decision-support-system.git
 cd ahp-decision-support-system
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-3. Run the app:
-```bash
+# Launch application
 streamlit run main.py
 ```
 
-## 🛠️ Usage
+## 🛠️ User Guide
 
-### Creating a New Analysis
-1. Define your problem (name and description)
-2. Add evaluation criteria (e.g., cost, quality, time)
-3. Add alternatives (e.g., Option A, Option B)
-4. Initialize matrices
+### 1. Create New Analysis
+1. **Problem Definition**:
+   - Enter analysis title and description
+2. **Criteria Setup**:
+   - Add decision factors (e.g., Cost, Quality)
+   - Supports bulk entry (one criterion per line)
+3. **Alternative Options**:
+   - Define comparable solutions
+   - Real-time table editing
 
-### Inputting Pairwise Comparisons
-1. Choose input method (dropdown or manual)
-2. Compare criteria using Saaty's scale (1-9)
-3. Compare alternatives for each criterion
-4. Calculate results
-
-### Viewing Results
-- Criteria weights
-- Consistency ratio
-- Alternative scores per criterion
-- Final rankings
-
-## 📦 Project Structure
-```
-ahp_project/
-├── main.py                  # Main application entry
-├── db.py                    # Database operations
-├── ahp.py                   # AHP calculations
-├── utils/                   # Utility functions
-├── ui/                      # User interface components
-└── requirements.txt         # Dependencies
+### 2. Pairwise Comparisons
+```python
+# Example comparison matrix
+[[1,   3,   5],
+ [1/3, 1,   2],
+ [1/5, 1/2, 1]]
 ```
 
-## 🌐 Deployment
+**Input Methods**:
+- **Dropdown**: Predefined Saaty scale values
+- **Manual**: Direct matrix cell editing
+
+**Validation**:
+- Automatic CR calculation
+- Warning for inconsistent judgments (CR ≥ 0.1)
+
+### 3. Results Interpretation
+- **Criteria Weights**: Relative importance percentages
+- **Alternative Scores**: Performance by criterion
+- **Final Ranking**: Comprehensive evaluation results
+
+## 📦 System Architecture
+```
+ahp-system/
+├── main.py                 # Application entry point
+├── ahp_core.py             # AHP algorithm implementation
+├── data_models/            # Database schemas
+│   ├── analysis.py
+│   └── comparison.py
+├── ui/                     # Interface components
+│   ├── input_panels.py
+│   └── visualization.py
+└── requirements.txt        # Dependency specifications
+```
+
+## 🌐 Deployment Options
 
 ### Streamlit Cloud
-[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/)
+[![Deploy on Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://streamlit.io/cloud)
 
-1. Fork this repository
-2. Log in to [Streamlit Cloud](https://share.streamlit.io/)
-3. Click "New app"
-4. Select your repository and branch
-5. Set main file path to `main.py`
-6. Click "Deploy!"
+1. Fork repository
+2. Connect to Streamlit Cloud
+3. Set main path to `main.py`
+4. Deploy
 
 ### Heroku
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 ```bash
-heroku create your-app-name
+# Create new instance
+heroku create ahp-decision-tool
+
+# Deploy application
 git push heroku main
 ```
 
-## 📚 AHP Method Details
-The Analytic Hierarchy Process (AHP) involves:
-1. Structuring the decision problem into a hierarchy
-2. Pairwise comparisons using Saaty's scale
-3. Weight calculation through matrix normalization
-4. Consistency check (CR < 0.1 required)
-5. Final score aggregation
+## 📊 AHP Methodology
+1. **Hierarchy Construction**:
+   - Goal → Criteria → Alternatives
+2. **Pairwise Comparison**:
+   ```math
+   A = \begin{bmatrix}
+   1 & a_{12} & \cdots & a_{1n} \\
+   1/a_{12} & 1 & \cdots & a_{2n} \\
+   \vdots & \vdots & \ddots & \vdots \\
+   1/a_{1n} & 1/a_{2n} & \cdots & 1
+   \end{bmatrix}
+   ```
+3. **Consistency Verification**:
+   - λₘₐₓ calculation
+   - CI = (λₘₐₓ - n)/(n - 1)
+   - CR = CI/RI
 
-## 🤝 Contributing
-Contributions are welcome! Please:
+## 🤝 Contribution Guidelines
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a PR
+2. Create feature branch (`git checkout -b feature/improvement`)
+3. Commit changes (`git commit -m 'Add new feature'`)
+4. Push to branch (`git push origin feature/improvement`)
+5. Open Pull Request
 
 ## 📜 License
-MIT - See [LICENSE](LICENSE) for details.
+MIT License - See [LICENSE](LICENSE) for full terms.
 
-## 📧 Contact
-- Email: [khacthien.dev@gmail.com](mailto:khacthien.dev@gmail.com)
-- GitHub: [@khacthiennguyen](https://github.com/khacthiennguyen)
-
+## 📩 Contact Information
+- **Developer**: Khac Thien Nguyen
+- **Email**: [khacthien.dev@gmail.com](mailto:khacthien.dev@gmail.com)
+- **GitHub**: [@khacthiennguyen](https://github.com/khacthiennguyen)
