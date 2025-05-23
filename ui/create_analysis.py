@@ -179,7 +179,27 @@ def show_create_analysis():
     
     # Initialize matrices button with validation
     st.markdown("---")
-    if st.button(get_text("initialize_matrices"), type="primary"):
+    
+    # Display current count of criteria and alternatives
+    col1, col2 = st.columns(2)
+    with col1:
+        criteria_count = len(st.session_state.criteria)
+        alternatives_count = len(st.session_state.alternatives)
+        st.info(f"{get_text('current_criteria')}: {criteria_count}")
+    with col2:
+        st.info(f"{get_text('current_alternatives')}: {alternatives_count}")
+    
+    # Clear any temporary calculations when re-initializing
+    if 'temp_criteria_weights' in st.session_state:
+        del st.session_state.temp_criteria_weights
+    if 'temp_alternative_weights' in st.session_state:
+        del st.session_state.temp_alternative_weights
+    if 'temp_consistency_ratios' in st.session_state:
+        del st.session_state.temp_consistency_ratios
+    
+    # Initialize matrices button with enhanced validation
+    init_button = st.button(get_text("initialize_matrices"), type="primary", disabled=(criteria_count < 2 or alternatives_count < 2))
+    if init_button:
         valid, message = validate_analysis_setup()
         if valid:
             n_criteria = len(st.session_state.criteria)
@@ -197,3 +217,7 @@ def show_create_analysis():
             st.success(get_text("matrices_initialized"))
         else:
             st.error(message)
+    
+    # Show an error message if the criteria or alternatives are insufficient
+    if criteria_count < 2 or alternatives_count < 2:
+        st.error(get_text("error_min_criteria_alternatives"))

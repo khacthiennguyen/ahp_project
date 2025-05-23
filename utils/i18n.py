@@ -45,6 +45,8 @@ translations = {
         "error_empty_name": "Name cannot be empty",
         "error_duplicate_name": "Name already exists",
         "error_no_criteria_alternatives": "Please add at least one criterion and one alternative",
+        "error_min_criteria_alternatives": "Please add at least two criteria and two alternatives",
+        "error_consistency_ratio": "Consistency ratio is too high (CR ≥ 0.1). Please revise your comparisons.",
         "matrices_initialized": "Matrices initialized! Go to the 'Input Matrices' tab.",
         "edit": "Edit",
         "remove": "Remove",
@@ -68,12 +70,17 @@ translations = {
         "initialize_first": "Please initialize matrices in the 'Create New Analysis' tab first.",
         "manual_input": "Manual Input",
         "dropdown_input": "Dropdown Input",
+        "excel_upload": "Excel Upload",
+        "excel_template": "Download Excel Template",
+        "excel_error": "Error in Excel file",
+        "excel_success": "Excel file successfully processed",
         
         # View Results
         "current_results": "Current Results",
         "past_results": "Past Results",
         "criteria_weights": "Criteria Weights",
         "consistency_ratios": "Consistency Ratios",
+        "consistency_metrics": "Consistency Metrics",
         "consistency_ratio_for": "Consistency Ratio for",
         "consistency_acceptable": "Consistency is acceptable if CR < 0.1",
         "alternative_weights_by_criterion": "Alternative Weights by Criterion",
@@ -89,7 +96,10 @@ translations = {
         "analysis": "Analysis",
         "date": "Date",
         "no_results": "No results to display. Please calculate results first.",
-        "no_past_analyses": "No past analyses found."
+        "no_past_analyses": "No past analyses found.",
+        "export_results": "Export Results",
+        "export_excel": "Export to Excel",
+        "export_pdf": "Export to PDF",
     },
     "vi": {
         # App general
@@ -137,6 +147,8 @@ translations = {
         "error_empty_name": "Tên không được để trống",
         "error_duplicate_name": "Tên đã tồn tại",
         "error_no_criteria_alternatives": "Vui lòng thêm ít nhất một tiêu chí và một phương án",
+        "error_min_criteria_alternatives": "Vui lòng thêm ít nhất hai tiêu chí và hai phương án",
+        "error_consistency_ratio": "Tỷ lệ nhất quán quá cao (CR ≥ 0.1). Vui lòng xem xét lại các so sánh của bạn.",
         "matrices_initialized": "Ma trận đã được khởi tạo! Chuyển đến tab 'Nhập Ma Trận'.",
         "edit": "Sửa",
         "remove": "Xóa",
@@ -157,12 +169,17 @@ translations = {
         "initialize_first": "Vui lòng khởi tạo ma trận trong tab 'Tạo Phân Tích Mới' trước.",
         "manual_input": "Nhập Thủ Công",
         "dropdown_input": "Nhập Bằng Dropdown",
+        "excel_upload": "Tải Lên Excel",
+        "excel_template": "Tải Xuống Mẫu Excel",
+        "excel_error": "Lỗi trong file Excel",
+        "excel_success": "File Excel đã được xử lý thành công",
         
         # View Results
         "current_results": "Kết Quả Hiện Tại",
         "past_results": "Kết Quả Trước Đây",
         "criteria_weights": "Trọng Số Tiêu Chí",
         "consistency_ratios": "Tỷ Số Nhất Quán",
+        "consistency_metrics": "Các chỉ số nhất quán",
         "consistency_ratio_for": "Tỷ Số Nhất Quán cho",
         "consistency_acceptable": "Tính nhất quán được chấp nhận nếu CR < 0.1",
         "alternative_weights_by_criterion": "Trọng Số Phương Án Theo Tiêu Chí",
@@ -178,7 +195,10 @@ translations = {
         "analysis": "Phân Tích",
         "date": "Ngày",
         "no_results": "Không có kết quả để hiển thị. Vui lòng tính toán kết quả trước.",
-        "no_past_analyses": "Không tìm thấy phân tích trước đây."
+        "no_past_analyses": "Không tìm thấy phân tích trước đây.",
+        "export_results": "Xuất kết quả",
+        "export_excel": "Xuất ra Excel",
+        "export_pdf": "Xuất ra PDF",
     }
 }
 

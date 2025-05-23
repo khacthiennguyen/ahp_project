@@ -9,7 +9,8 @@ A web-based decision support system implementing the Analytic Hierarchy Process 
 
 - **Multi-language support**: English & Vietnamese interfaces
 - **Criteria & alternatives management**: Add, edit, and delete criteria/alternatives
-- **Pairwise comparison**: Two input methods (dropdown & manual entry)
+- **Pairwise comparison**: Three input methods (dropdown, manual entry & Excel upload)
+- **Excel integration**: Upload matrices from Excel files and download templates
 - **AHP calculations**: Compute weights, consistency ratio, and final scores
 - **Visualization**: Interactive tables and charts
 - **Analysis storage**: Save and retrieve previous analyses

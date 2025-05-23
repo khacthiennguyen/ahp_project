@@ -4,6 +4,13 @@ import numpy as np
 from utils.i18n import get_text
 from db import get_past_sessions, get_session_data
 from utils.formatting import format_decimal, format_percentage
+import io
+import base64
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from utils.export_utils import export_to_excel, export_to_pdf
 
 def show_view_results():
     """Show the view results UI"""
@@ -44,20 +51,26 @@ def show_current_results():
                 hide_index=True
             )
             
-            # Display consistency ratios
-            st.subheader(get_text("consistency_ratios"))
-            st.write(f"{get_text('consistency_ratio_for')} {get_text('criteria')}: {format_decimal(st.session_state.consistency_ratios['criteria'])}")
+            # Display consistency metrics
+            st.subheader(get_text("consistency_metrics"))
+            st.write(f"λ_max: {format_decimal(st.session_state.lambda_max_values['criteria'])}")
+            st.write(f"CI: {format_decimal(st.session_state.consistency_indices['criteria'])}")
+            st.write(f"CR: {format_decimal(st.session_state.consistency_ratios['criteria'])}")
             st.write(get_text("consistency_acceptable"))
             
-            # Create a dataframe for consistency ratios
+            # Create a dataframe for consistency metrics
             cr_data = {
                 get_text("criterion"): [],
-                get_text("consistency_ratio_for"): []
+                "λ_max": [],
+                "CI": [],
+                "CR": []
             }
             
             for criterion in st.session_state.criteria:
                 cr_data[get_text("criterion")].append(criterion)
-                cr_data[get_text("consistency_ratio_for")].append(format_decimal(st.session_state.consistency_ratios[criterion]))
+                cr_data["λ_max"].append(format_decimal(st.session_state.lambda_max_values[criterion]))
+                cr_data["CI"].append(format_decimal(st.session_state.consistency_indices[criterion]))
+                cr_data["CR"].append(format_decimal(st.session_state.consistency_ratios[criterion]))
             
             cr_df = pd.DataFrame(cr_data)
             st.dataframe(
@@ -81,13 +94,25 @@ def show_current_results():
                         get_text("weight"): [format_decimal(w) for w in st.session_state.alternative_weights[criterion]]
                     })
                     alt_weights_df = alt_weights_df.sort_values(get_text("weight"), ascending=False)
-                    
                     # Apply styling to the dataframe
                     st.dataframe(
                         alt_weights_df,
                         use_container_width=True,
                         hide_index=True
                     )
+                    # Hiển thị chỉ số nhất quán của bảng phương án theo tiêu chí nếu có
+                    if (
+                        hasattr(st.session_state, 'lambda_max_values') and
+                        hasattr(st.session_state, 'consistency_indices') and
+                        hasattr(st.session_state, 'consistency_ratios') and
+                        criterion in st.session_state.lambda_max_values and
+                        criterion in st.session_state.consistency_indices and
+                        criterion in st.session_state.consistency_ratios
+                    ):
+                        st.markdown(f"**Chỉ số nhất quán cho bảng phương án theo tiêu chí '{criterion}':**")
+                        st.write(f"λ_max: {format_decimal(st.session_state.lambda_max_values[criterion])}")
+                        st.write(f"CI: {format_decimal(st.session_state.consistency_indices[criterion])}")
+                        st.write(f"CR: {format_decimal(st.session_state.consistency_ratios[criterion])}")
         
         # Final Scores and Ranking (full width) - Keep percentage format
         st.markdown("---")
@@ -117,6 +142,31 @@ def show_current_results():
         chart_data = chart_data.sort_values('Score', ascending=False)
         
         st.bar_chart(chart_data.set_index('Alternative')['Score'])
+        
+        # Add export functionality
+        st.markdown("---")
+        st.subheader(get_text("export_results"))
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            # Export to Excel
+            excel_data = export_to_excel(None, is_current=True, st=st)
+            st.download_button(
+                label=get_text("export_excel"),
+                data=excel_data,
+                file_name="ahp_results.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        
+        with col2:
+            # Export to PDF
+            pdf_data = export_to_pdf(None, is_current=True, st=st)
+            st.download_button(
+                label=get_text("export_pdf"),
+                data=pdf_data,
+                file_name="ahp_results.pdf",
+                mime="application/pdf",
+            )
     else:
         st.info(get_text("no_results"))
 
@@ -165,20 +215,36 @@ def show_past_results():
                     hide_index=True
                 )
                 
-                # Display consistency ratios
-                st.subheader(get_text("consistency_ratios"))
-                st.write(f"{get_text('consistency_ratio_for')} {get_text('criteria')}: {format_decimal(session_data['consistency_ratios']['criteria'])}")
+                # Display consistency metrics
+                st.subheader(get_text("consistency_metrics"))
+                if 'lambda_max_values' in session_data and 'consistency_indices' in session_data:
+                    st.write(f"λ_max: {format_decimal(session_data['lambda_max_values']['criteria'])}")
+                    st.write(f"CI: {format_decimal(session_data['consistency_indices']['criteria'])}")
+                    st.write(f"CR: {format_decimal(session_data['consistency_ratios']['criteria'])}")
+                else:
+                    st.write(f"CR: {format_decimal(session_data['consistency_ratios']['criteria'])}")
                 st.write(get_text("consistency_acceptable"))
                 
-                # Create a dataframe for consistency ratios
+                # Create a dataframe for consistency metrics
                 cr_data = {
                     get_text("criterion"): [],
-                    get_text("consistency_ratio_for"): []
                 }
+                
+                if 'lambda_max_values' in session_data and 'consistency_indices' in session_data:
+                    cr_data["λ_max"] = []
+                    cr_data["CI"] = []
+                    cr_data["CR"] = []
+                else:
+                    cr_data[get_text("consistency_ratio_for")] = []
                 
                 for criterion in session_data['criteria']:
                     cr_data[get_text("criterion")].append(criterion)
-                    cr_data[get_text("consistency_ratio_for")].append(format_decimal(session_data['consistency_ratios'][criterion]))
+                    if 'lambda_max_values' in session_data and 'consistency_indices' in session_data:
+                        cr_data["λ_max"].append(format_decimal(session_data['lambda_max_values'][criterion]))
+                        cr_data["CI"].append(format_decimal(session_data['consistency_indices'][criterion]))
+                        cr_data["CR"].append(format_decimal(session_data['consistency_ratios'][criterion]))
+                    else:
+                        cr_data[get_text("consistency_ratio_for")].append(format_decimal(session_data['consistency_ratios'][criterion]))
                 
                 cr_df = pd.DataFrame(cr_data)
                 st.dataframe(
@@ -209,6 +275,19 @@ def show_past_results():
                             use_container_width=True,
                             hide_index=True
                         )
+                        # Hiển thị chỉ số nhất quán của bảng phương án theo tiêu chí nếu có
+                        if (
+                            'lambda_max_values' in session_data and
+                            'consistency_indices' in session_data and
+                            'consistency_ratios' in session_data and
+                            criterion in session_data['lambda_max_values'] and
+                            criterion in session_data['consistency_indices'] and
+                            criterion in session_data['consistency_ratios']
+                        ):
+                            st.markdown(f"**Chỉ số nhất quán cho bảng phương án theo tiêu chí '{criterion}':**")
+                            st.write(f"λ_max: {format_decimal(session_data['lambda_max_values'][criterion])}")
+                            st.write(f"CI: {format_decimal(session_data['consistency_indices'][criterion])}")
+                            st.write(f"CR: {format_decimal(session_data['consistency_ratios'][criterion])}")
             
             # Final Scores and Ranking (full width) - Keep percentage format
             st.markdown("---")
@@ -238,5 +317,36 @@ def show_past_results():
             chart_data = chart_data.sort_values('Score', ascending=False)
             
             st.bar_chart(chart_data.set_index('Alternative')['Score'])
+            
+            # Add export functionality
+            st.markdown("---")
+            st.subheader(get_text("export_results"))
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                # Export to Excel
+                excel_data = export_to_excel(session_data, is_current=False, st=st)
+                st.download_button(
+                    label=get_text("export_excel"),
+                    data=excel_data,
+                    file_name=f"ahp_results_{session_data['id']}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            with col2:
+                # Export to PDF
+                pdf_data = export_to_pdf(session_data, is_current=False, st=st)
+                st.download_button(
+                    label=get_text("export_pdf"),
+                    data=pdf_data,
+                    file_name=f"ahp_results_{session_data['id']}.pdf",
+                    mime="application/pdf",
+                )
+            # Nút xóa phân tích
+            st.markdown("---")
+            if st.button("🗑️ Xóa phân tích này", type="secondary"):
+                from db import delete_session
+                delete_session(session_data['id'])
+                st.success("Đã xóa phân tích!")
+                st.rerun()
     else:
         st.info(get_text("no_past_analyses"))

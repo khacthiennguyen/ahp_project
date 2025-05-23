@@ -2,11 +2,14 @@ import streamlit as st
 from utils.i18n import get_text, set_language
 from db import init_db
 from ui.create_analysis import show_create_analysis
-from ui.input_matrices import show_input_matrices
+from ui.input_matrices_new import show_input_matrices
 from ui.view_results import show_view_results
 
 # Set up the page
 st.set_page_config(page_title="AHP Decision Support System", layout="wide")
+
+# Mặc định luôn là tiếng Việt
+set_language('vi')
 
 # Initialize database
 init_db()
@@ -37,21 +40,6 @@ if 'language' not in st.session_state:
 
 # Language selector in sidebar
 with st.sidebar:
-    language = st.selectbox(
-        "Language / Ngôn ngữ",
-        options=["English", "Tiếng Việt"],
-        index=0 if st.session_state.language == "en" else 1
-    )
-    
-    if language == "English" and st.session_state.language != "en":
-        st.session_state.language = "en"
-        st.rerun()
-    elif language == "Tiếng Việt" and st.session_state.language != "vi":
-        st.session_state.language = "vi"
-        st.rerun()
-    
-    set_language(st.session_state.language)
-    
     # About AHP section
     st.header(get_text("about_ahp"))
     st.write(get_text("ahp_description"))

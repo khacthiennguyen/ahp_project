@@ -15,7 +15,9 @@ def calculate_consistency_ratio(matrix, weights):
     n = len(weights)
     
     # Random consistency index values
-    RI = {1: 0, 2: 0, 3: 0.58, 4: 0.9, 5: 1.12, 6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49}
+    RI = {1: 0, 2: 0, 3: 0.58, 4: 0.9, 5: 1.12, 6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49, 11: 1.51, 12: 1.54, 13: 1.56, 14: 1.57, 15: 1.59}
+    # For n > 15, use the last known RI value
+
     
     # Calculate lambda max
     weighted_sum = np.dot(matrix, weights)
@@ -26,9 +28,10 @@ def calculate_consistency_ratio(matrix, weights):
     CI = (lambda_max - n) / (n - 1) if n > 1 else 0
     
     # Calculate consistency ratio
-    CR = CI / RI[n] if n >= 1 and n <= 10 and n > 1 else 0
+    CR = CI / RI[n] if n >= 1 and n <= 15 and n > 1 else (CI / RI[15] if n > 15 and n > 1 else 0)
     
-    return CR
+    # Return a tuple of (CR, Lambda_max, CI)
+    return (CR, lambda_max, CI)
 
 def get_saaty_scale_description(value, language="en"):
     """Return description for Saaty scale values in the selected language"""
@@ -63,9 +66,11 @@ def calculate_all_results(criteria_matrix, alternative_matrices, criteria, alter
     # Calculate criteria weights
     criteria_weights = calculate_weights(criteria_matrix)
     
-    # Calculate consistency ratio for criteria
-    cr_criteria = calculate_consistency_ratio(criteria_matrix, criteria_weights)
+    # Calculate consistency metrics for criteria
+    cr_criteria, lambda_max_criteria, ci_criteria = calculate_consistency_ratio(criteria_matrix, criteria_weights)
     consistency_ratios = {'criteria': cr_criteria}
+    lambda_max_values = {'criteria': lambda_max_criteria}
+    consistency_indices = {'criteria': ci_criteria}
     
     # Calculate alternative weights for each criterion
     alternative_weights = {}
@@ -73,9 +78,11 @@ def calculate_all_results(criteria_matrix, alternative_matrices, criteria, alter
         alt_weights = calculate_weights(alternative_matrices[criterion])
         alternative_weights[criterion] = alt_weights
         
-        # Calculate consistency ratio for alternatives
-        cr_alt = calculate_consistency_ratio(alternative_matrices[criterion], alt_weights)
+        # Calculate consistency metrics for alternatives
+        cr_alt, lambda_max_alt, ci_alt = calculate_consistency_ratio(alternative_matrices[criterion], alt_weights)
         consistency_ratios[criterion] = cr_alt
+        lambda_max_values[criterion] = lambda_max_alt
+        consistency_indices[criterion] = ci_alt
     
     # Calculate final scores
     n_alternatives = len(alternatives)
@@ -90,5 +97,7 @@ def calculate_all_results(criteria_matrix, alternative_matrices, criteria, alter
         'criteria_weights': criteria_weights,
         'alternative_weights': alternative_weights,
         'final_scores': final_scores,
-        'consistency_ratios': consistency_ratios
+        'consistency_ratios': consistency_ratios,
+        'lambda_max_values': lambda_max_values,
+        'consistency_indices': consistency_indices
     }
