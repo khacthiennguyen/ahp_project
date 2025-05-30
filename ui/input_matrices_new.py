@@ -134,7 +134,7 @@ def show_input_matrices():
                     for j in range(i+1, n_criteria):
                         col1, col2, col3 = st.columns([2, 1, 2])
                         with col1:
-                            st.write(st.session_state.criteria[i])
+                            st.write(st.session_state.criteria[i])                        
                         with col2:
                             def format_saaty_value(x):
                                 if x >= 1:
@@ -351,6 +351,7 @@ def show_input_matrices():
                                 f"{get_text('compare')} {st.session_state.alternatives[i]} {get_text('vs')} {st.session_state.alternatives[j]} {get_text('for')} {criterion}",
                                 options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 1/2, 1/3, 1/4, 1/5, 1/6, 1/7, 1/8, 1/9],
                                 format_func=format_saaty_value_alt,
+
                                 key=f"alt_{criterion_idx}_{i}_{j}",
                                 index=0
                             )
@@ -503,6 +504,7 @@ def show_input_matrices():
                         inconsistent_matrices.append(get_text("criteria_comparison"))
                         all_consistent = False
                         inconsistent_matrices.append(get_text("criteria_comparison"))
+
             
             # Check alternative matrices for each criterion
             for criterion in st.session_state.criteria:

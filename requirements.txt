@@ -3,3 +3,5 @@ numpy
 pandas
 reportlab
 matplotlib
+openpyxl
+xlsxwriter
